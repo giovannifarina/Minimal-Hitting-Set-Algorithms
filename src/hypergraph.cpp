@@ -34,6 +34,8 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 
+#include <limits>
+
 namespace agdmhs {
     Hypergraph::Hypergraph (unsigned num_verts,
                             unsigned num_edges):
@@ -299,6 +301,30 @@ namespace agdmhs {
             }
             output_filestream << "\n";
         }
+    };
+
+    unsigned Hypergraph::minimum_size () const {
+        // Set up file writer
+//        unsigned minimum = std::numeric_limits<unsigned >::max();
+//        for (auto const& edge: _edges) {
+//            if (edge.size() < minimum)
+//                minimum = edge.count();
+//        }
+//        return minimum;
+
+        unsigned minimum = std::numeric_limits<unsigned >::max();
+        for (auto const& edge: _edges) {
+            Hypergraph::EdgeIndex v = edge.find_first();
+            unsigned counter = 0;
+            while (v != Edge::npos) {
+                counter += 1;
+                v = edge.find_next(v);
+            }
+            if (counter < minimum)
+                minimum = counter;
+        }
+        return minimum;
+
     };
 
     Hypergraph Hypergraph::minimization () const {

@@ -68,6 +68,25 @@ int main (int argc, char * argv[]) {
 
     po::notify(vm);
 
+    // Process logging-related options
+    int verbosity = vm["verbosity"].as<int>();
+    switch (verbosity) {
+        case 1:
+            boost::log::core::get()->set_filter
+                    (boost::log::trivial::severity >= boost::log::trivial::debug);
+            break;
+
+        case 2:
+            boost::log::core::get()->set_filter
+                    (boost::log::trivial::severity >= boost::log::trivial::trace);
+            break;
+
+        default:
+            boost::log::core::get()->set_filter
+                    (boost::log::trivial::severity >= boost::log::trivial::warning);
+            break;
+    }
+
     // Process input file
     BOOST_LOG_TRIVIAL(debug) << "Loading hypergraph from file.";
     std::string input_file(vm["input"].as<std::string>());
@@ -75,6 +94,7 @@ int main (int argc, char * argv[]) {
     BOOST_LOG_TRIVIAL(debug) << "Loading complete.";
 
     // Process logging-related options
+    /*
     int verbosity = vm["verbosity"].as<int>();
     switch (verbosity) {
     case 1:
@@ -92,9 +112,10 @@ int main (int argc, char * argv[]) {
             (boost::log::trivial::severity >= boost::log::trivial::warning);
         break;
     }
+    */
 
     // Print input information
-    std::cout << "Input has " << H.num_verts() << " vertices and " << H.num_edges() << " edges." << std::endl;
+    //std::cout << "Input has " << H.num_verts() << " vertices and " << H.num_edges() << " edges." << std::endl;
 
     // Run chosen algorithm
     std::string algname = vm["algorithm"].as<std::string>();
@@ -116,18 +137,20 @@ int main (int argc, char * argv[]) {
         throw po::invalid_option_value(error_message.str());
     }
 
-    BOOST_LOG_TRIVIAL(debug) << "Running algorithm " << algname;
+    BOOST_LOG_TRIVIAL(warning) << "Running algorithm " << algname;
     agdmhs::Hypergraph Htrans = mhs_algorithm->transversal(H);
 
     if (not count_only) {
-        std::cout << "Found " << Htrans.num_edges() << " hitting sets." << std::endl;
+        //std::cout << "Found " << Htrans.num_edges() << " hitting sets." << std::endl;
         BOOST_LOG_TRIVIAL(debug) << "Algorithm complete.";
+        BOOST_LOG_TRIVIAL(warning) << "Minimum Hitting Set size: " << Htrans.minimum_size();
+        //std::cout << "Minimum " << Htrans.minimum_size()  << std::endl;
 
         // Print results
-        BOOST_LOG_TRIVIAL(debug) << "Writing result file.";
-        std::string output_file(vm["output"].as<std::string>());
-        Htrans.write_to_file(output_file);
-        BOOST_LOG_TRIVIAL(debug) << "Writing complete.";
+//        BOOST_LOG_TRIVIAL(debug) << "Writing result file.";
+//        std::string output_file(vm["output"].as<std::string>());
+//        Htrans.write_to_file(output_file);
+//        BOOST_LOG_TRIVIAL(debug) << "Writing complete.";
     }
 
     return 0;
