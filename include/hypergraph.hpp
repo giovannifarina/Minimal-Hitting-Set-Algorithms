@@ -62,6 +62,7 @@ namespace agdmhs {
         const Edge& operator[] (EdgeIndex edge_index) const;
 
         void write_to_file(const fs::path& output_file) const;
+        unsigned minimum_size () const;
         Hypergraph minimization() const;
         Hypergraph transpose() const;
         Edge verts_covered() const;
