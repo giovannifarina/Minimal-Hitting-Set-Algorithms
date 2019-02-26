@@ -1,3 +1,2 @@
-# Fork from https://github.com/VeraLiconaResearchGroup/Minimal-Hitting-Set-Algorithms
-
+# Minimum Hitting Set
 This fork prints the size of the Minimum Hitting Set
